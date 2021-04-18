@@ -22,11 +22,11 @@ public class UserController extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         System.out.println("进入用户控制器");
-        String path = request.getServletPath();
+            String path = request.getServletPath();
 
-        if("/setting/user/login.do".equals(path)){
-            //登录验证
-            login(request,response);
+            if("/setting/user/login.do".equals(path)){
+                //登录验证
+                login(request,response);
 
         } else if("/setting/user/xxx.do".equals(path)){
 
@@ -39,14 +39,22 @@ public class UserController extends HttpServlet {
         //接受参数（浏览器发起的异步请求登录携带的参数）
         String loginAct = request.getParameter("loginAct"); //账号
         String loginPwd = request.getParameter("loginPwd"); //密码
+        System.out.println("用户输入的明文密码："+loginPwd);
         loginPwd = MD5Util.getMD5(loginPwd);  //将密码的明文形式转换为MD5密文形式
         String ip = request.getRemoteAddr();  //浏览器端的ip地址
+
+        System.out.println("用户输入的账号："+loginAct);
+        System.out.println("用户输入的密文密码："+loginPwd);
+        System.out.println("用户输入的ip："+ip);
+
 
         //未来的开发统一使用代理类形态的接口对象
         UserService us = (UserService) ServiceFactory.getService(new UserServiceImpl());
 
         try{
             //调用业务层的login()方法
+
+            System.out.println("尝试调用login方法");
             User user = us.login(loginAct,loginPwd,ip);
 
             request.getSession().setAttribute("user",user);  //将登录信息存放在session域中，供以后使用（数据共享）

@@ -8,6 +8,7 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.SqlSessionUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserServiceImpl implements UserService {
@@ -15,15 +16,15 @@ public class UserServiceImpl implements UserService {
     //作为Service成员变量，用于调用Dao层实现与数据库交互
     private UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
 
+
+
     public User login(String loginAct, String loginPwd, String ip) throws LoginException {
 
+        //把请求携带的信息封装成一个map集合
         Map<String,String> map = new HashMap<String, String>();
         map.put("loginAct",loginAct);
         map.put("loginPwd",loginPwd);
 
-        System.out.println("用户输入的账号："+loginAct);
-        System.out.println("用户输入的密码："+loginPwd);
-        System.out.println("用户输入的ip："+ip);
 
         //通过UserDao对象，调用dao层与数据库交互，返回查询的结果user
         User user = userDao.login(map);
@@ -64,4 +65,14 @@ public class UserServiceImpl implements UserService {
         //如果程序执行到这里，说明用户的各项信息均正确
         return user;
     }
+
+    public List<User> getUserList() {
+
+        //调用Dao层实现与数据库交互的具体细节，返回查询的结果user列表
+        List<User> userList = userDao.getUserList();
+
+        return userList;
+    }
+
+
 }
