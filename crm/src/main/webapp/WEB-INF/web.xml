@@ -14,8 +14,18 @@
     <filter-name>EncodingFilter</filter-name>
     <url-pattern>*.do</url-pattern>      <!--只过滤后台形式的文件-->
   </filter-mapping>
+
+  <filter>
+    <filter-name>LoginFilter</filter-name>
+    <filter-class>com.bjpowernode.crm.web.filter.LoginFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>LoginFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+    <url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
   
-  
+  <!--设置控制器（登录）-->
   <servlet>
     <servlet-name>UserController</servlet-name>
     <servlet-class>com.bjpowernode.crm.settings.web.controller.UserController</servlet-class>
@@ -24,6 +34,19 @@
     <servlet-name>UserController</servlet-name>
     <url-pattern>/setting/user/login.do</url-pattern>
   </servlet-mapping>
+
+  <!--市场活动控制器（获取用户信息、保存活动信息）-->
+  <servlet>
+    <servlet-name>ActivityController</servlet-name>
+    <servlet-class>com.bjpowernode.crm.workbench.web.controller.ActivityController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ActivityController</servlet-name>
+    <url-pattern>/workbench/activity/getUserList.do</url-pattern>
+    <url-pattern>/workbench/activity/save.do</url-pattern>
+  </servlet-mapping>
+
+
 
   
 </web-app>

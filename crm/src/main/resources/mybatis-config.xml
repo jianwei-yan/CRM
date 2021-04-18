@@ -10,6 +10,8 @@
 
     <!--批量配置别名-->
   	<package name="com.bjpowernode.crm.settings.domain"/>
+    <package name="com.bjpowernode.crm.workbench.domain"/>
+
   </typeAliases>
   
   <environments default="development">
@@ -28,6 +30,7 @@
   <mappers>
       <!--dao层的xml文件批量注册到主配置文件-->
       <package name="com.bjpowernode.crm.settings.dao"/>
+      <package name="com.bjpowernode.crm.workbench.dao"/>
   </mappers>
 </configuration>
 
