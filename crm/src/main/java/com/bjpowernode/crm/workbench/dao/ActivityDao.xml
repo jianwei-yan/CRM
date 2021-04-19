@@ -33,4 +33,59 @@
 
     </insert>
 
+    <!--查找市场活动信息总数（动态SQL）-->
+    <select id="getTotalByCondition" resultType="int">
+        select count(*)
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+
+        <where>
+            <if test="name!=null and name!=''">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate!=null and startDate!=''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="name!=null and name!=''">
+                and a.endDate &lt; #{endtDate}
+            </if>
+        </where>
+
+    </select>
+
+    <!--分页查找市场活动信息（条件查询、动态SQL）-->
+    <select id="getActivityListByCondition" resultType="Activity">
+        select
+           a.id,
+           a.name,
+           u.name as owner,
+           a.startDate,
+           a.endDate
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+
+        <where>
+            <if test="name!=null and name!=''">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate!=null and startDate!=''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="name!=null and name!=''">
+                and a.endDate &lt; #{endtDate}
+            </if>
+        </where>
+
+        order by a.createTime desc
+        limit #{skipCount},#{pageSize}
+    </select>
+
 </mapper>

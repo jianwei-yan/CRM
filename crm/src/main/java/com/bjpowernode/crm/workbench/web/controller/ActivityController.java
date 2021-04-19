@@ -7,6 +7,7 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
+import com.bjpowernode.crm.vo.PaginationVO;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
@@ -16,7 +17,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ActivityController extends HttpServlet {
 
@@ -36,7 +39,47 @@ public class ActivityController extends HttpServlet {
 
             //添加市场活动都数据库
             save(request,response);
+        } else if ("/workbench/activity/pageList.do".equals(path)){
+
+            //查询所有的市场活动信息
+            pageList(request,response);
         }
+    }
+
+    private void pageList(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("执行市场活动查询操作（结合条件查询、分页查询），展现市场活动列表");
+
+        //取出发送的参数信息
+        String pageNoStr = request.getParameter("pageNo");
+        String pageSizeStr = request.getParameter("pageSize");
+        String name = request.getParameter("name");
+        String owner = request.getParameter("owner");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+
+        int pageNo = Integer.valueOf(pageNoStr);
+        int pageSize = Integer.valueOf(pageSizeStr);  //每页展现的记录数
+        int skipCount = (pageNo-1)*pageSize;          //略过的记录数，limit()的第一个参数
+
+        //将信息封装到一个map对象中
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("name",name);
+        map.put("owner",owner);
+        map.put("startDate",startDate);
+        map.put("endDate",endDate);
+        map.put("skipCount",skipCount);
+        map.put("pageSize",pageSize);
+
+        //通过ActivityService业务层查询市场活动信息（jdk动态代理）
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        PaginationVO<Activity> activityVo= as.pageList(map);   //返回值为VO
+
+
+        //把activityVo解析成json串，并写入响应体
+        //activityVo----->>{"total":100,"dataList":[{市场活动1},{},{}...]}
+        PrintJson.printJsonObj(response,activityVo);
+
     }
 
     private void save(HttpServletRequest request, HttpServletResponse response) {
@@ -69,7 +112,7 @@ public class ActivityController extends HttpServlet {
 
 
 
-        //通过User业务层获取用户信息列表（jdk动态代理）
+        //通过UserService业务层获取用户信息列表（jdk动态代理）
         ActivityService as = (ActivityService)ServiceFactory.getService(new ActivityServiceImpl());
         Boolean success = as.save(activity);
 
@@ -84,7 +127,7 @@ public class ActivityController extends HttpServlet {
 
         System.out.println("取得所有的用户信息");
 
-        //通过User业务层获取用户信息列表（jdk动态代理）
+        //通过UserService业务层获取用户信息列表（jdk动态代理）
         UserService us = (UserService) ServiceFactory.getService(new UserServiceImpl());
         List<User> uList = us.getUserList();
 

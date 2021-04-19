@@ -24,7 +24,7 @@
             success:function () {
 
             }
-        })
+        });
 
         //创建时间为当前的系统时间
         String createTime = DateTimeUtil.getSysTime();
